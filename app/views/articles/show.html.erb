@@ -1,0 +1,68 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+<strong>Body:</strong>
+  <%= @article.body %>
+</p>
+
+<p>
+  <strong>Author:</strong>
+  <%= @article.author %>
+</p>
+<div style="overflow-y: auto;">
+      <% if @conversations.any? %>
+      <strong>Comments:</strong>
+          <ul class="media-list">
+            <% @conversations.each do |conversation| %>
+                <li class="media">
+                 <%=conversation.content%>
+                <p id="post_reply_text">Post a reply</p>
+              <%= form_for(@new_reply) do |f| %>
+      <%= f.text_area :content, size: "75x1" %>
+    <%= f.submit "Reply", class: "btn btn-primary",style:"margin-top: -25px;
+margin-left: 14px;" %>
+<%= f.hidden_field :article_id, :value => @article.id%>
+<%= f.hidden_field :coment_id, :value => conversation.id%>
+ <%end%>
+				<% if conversation.coment_reply.any? %>
+                 <div class="replies" style="color:#87CEFA">
+                 <p id="replies_number"><%=conversation.coment_reply.count%>  Replies</p>	
+                 </div>
+
+                 <div class="hidden" id="reservation_timing" style="color:#87CEFA">
+                 	<% conversation.coment_reply.each do |reply| %>
+                 <p>
+                 <%=reply.content%></p>
+
+                 <%end%>
+                 </div>
+                 
+                 <%end%>
+                  
+                </li>
+                <% end %>
+           
+
+          </ul>
+      <% else %>
+          <p>no comments.</p>
+      <% end %>
+      <p id="post_reply_text">Post a Comment</p>
+        <%= form_for(@new_comment) do |f| %>
+      
+<%= f.text_area :content, size: "75x1" %>
+    <%= f.submit "Comment", class: "btn btn-primary",style:"margin-top: -25px;
+margin-left: 14px;" %>
+<%= f.hidden_field :article_id, :value => @article.id%>
+ <%end%>
+</div>
+<%= link_to 'Edit', edit_article_path(@article) %> |
+<%= link_to 'Back', articles_path %>
+<script>
+$("#replies_number").click(function(){
+$("#reservation_timing").removeClass("hidden");
+});
+$("post_reply_text").click(function(){
+	$("#comment_reply_form").removeClass("hidden");
+});
+</script>
